@@ -25,13 +25,13 @@ This project implements a multi-threaded HTTP/1.1 web server in Python using low
 - **Logging**: Writes a standard Apache-style log to `server.log` and also outputs to console.
 - **Security**: Prevents directory traversal attacks (403 response).
 
-## Requirements
+## Background Settings
 - Python 3.6 or higher.
 - No external libraries needed (uses only standard library modules).
 
 ## How to Run
-1. Place the server script `MultiThreadedWebServer.py` in your project directory.
+1. Place the server script `MultiThreadWebServer.py` in your project directory.
 2. Ensure a subdirectory named `htdocs` exists (or it will be created automatically with sample files).
 3. Run the server:
    ```bash
-   python MultiThreadedWebServer.py
+   python MultiThreadWebServer.py
