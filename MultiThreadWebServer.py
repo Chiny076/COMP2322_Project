@@ -176,7 +176,10 @@ def handle_client(conn_socket, client_addr):
                 response.headers['Content-Type'] = 'text/html'
                 conn_socket.sendall(response.to_bytes())
                 logger.info(f"{client_addr[0]} - - [{datetime.now().strftime('%d/%b/%Y:%H:%M:%S %z')}] {req.method} {req.path} {req.version} {response.status_code}")
-                # Continue with keep-alive if client requested
+                # Close connection if non-persistent
+                if not keep_alive_requested:
+                    keep_alive = False
+                    break
                 continue
 
             # Try to open file (handles PermissionError -> 403)
@@ -190,6 +193,10 @@ def handle_client(conn_socket, client_addr):
                 response.headers['Content-Type'] = 'text/html'
                 conn_socket.sendall(response.to_bytes())
                 logger.info(f"{client_addr[0]} - - [{datetime.now().strftime('%d/%b/%Y:%H:%M:%S %z')}] {req.method} {req.path} {req.version} {response.status_code}")
+                # Close connection if non-persistent
+                if not keep_alive_requested:
+                    keep_alive = False
+                    break
                 continue
 
             # Handle Last-Modified and If-Modified-Since
@@ -207,6 +214,9 @@ def handle_client(conn_socket, client_addr):
                             response.set_body('')
                             conn_socket.sendall(response.to_bytes())
                             logger.info(f"{client_addr[0]} - - [{datetime.now().strftime('%d/%b/%Y:%H:%M:%S %z')}] {req.method} {req.path} {req.version} {response.status_code}")
+                            if not keep_alive_requested:
+                                keep_alive = False
+                                break
                             continue
                     except Exception:
                         pass  # Invalid date header, ignore
